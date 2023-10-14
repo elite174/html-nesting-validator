@@ -1,0 +1,100 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>HTML nesting validator</title>
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content="Validate your HTML tag nesting here" />
+  </head>
+  <body class="grid grid-rows-[auto_1fr_auto] h-[100dvh]">
+    <header class="text-center p-4">
+      <h1 class="text-2xl font-semibold">Validate HTML nesting</h1>
+    </header>
+    <main>
+      <form id="form" class="flex flex-col items-center justify-center h-full gap-5">
+        <div class="flex max-md:flex-col items-end gap-4 max-w-[80vw]">
+          <div class="form-control">
+            <label class="label" for="parent-input">Parent HTML tag</label>
+            <input
+              id="parent-input"
+              class="input input-md input-bordered transition-colors"
+              type="text"
+              placeholder="Enter parent html tag"
+              maxlength="10"
+              required
+            />
+          </div>
+          <span class="text-2xl font-bold max-md:hidden pb-3">&gt</span>
+          <div class="form-control">
+            <label for="child-input" class="label"> Child HTML tag</label>
+            <input
+              id="child-input"
+              class="input input-md input-bordered transition-colors"
+              type="text"
+              required
+              maxlength="10"
+              placeholder="Enter child html tag"
+            />
+          </div>
+        </div>
+        <button id="validate-button" type="submit" class="btn btn-accent transition-colors">Validate</button>
+      </form>
+    </main>
+    <footer class="p-4 flex flex-col md:flex-row gap-1 justify-between">
+      <p>
+        This site uses <a
+          class="link link-info"
+          href="https://github.com/MananTank/validate-html-nesting"
+          target="_blank">this HTML nesting validator</a
+        >
+      </p>
+      <div class="flex gap-4 max-md:justify-between">
+        <a class="link link-info" href="https://github.com/elite174/html-nesting-validator">Github</a>
+        <p>Made by <a class="link link-success" href="https://github.com/elite174">Vlad</a></p>
+      </div>
+    </footer>
+  </body>
+</html>
+
+<script>
+  import { isValidHTMLNesting } from "validate-html-nesting";
+
+  let resetTimer: number;
+
+  const button = document.getElementById("validate-button")!;
+  const parentTagInput = document.getElementById("parent-input")! as HTMLInputElement;
+  const childTagInput = document.getElementById("child-input")! as HTMLInputElement;
+  const inputs = [parentTagInput, childTagInput];
+
+  const reset = () => {
+    clearTimeout(resetTimer);
+
+    button.classList.remove("btn-success", "btn-error");
+    inputs.forEach((input) => input.classList.remove("input-success", "input-error"));
+    button.textContent = "Validate";
+  };
+
+  const applyStyles = (valid: boolean) => {
+    button.textContent = valid ? "Valid nesting" : "Invalid nesting";
+    button.classList.add(valid ? "btn-success" : "btn-error");
+    inputs.forEach((input) => input.classList.add(valid ? "input-success" : "input-error"));
+
+    resetTimer = setTimeout(() => {
+      reset();
+    }, 3000);
+
+    document.querySelectorAll("input").forEach((input) => input.addEventListener("input", reset, { once: true }));
+  };
+
+  const handleFormSubmit = (e: Event) => {
+    e.preventDefault();
+
+    const parentTag = parentTagInput.value.toLowerCase();
+    const childTag = childTagInput.value.toLowerCase();
+
+    applyStyles(isValidHTMLNesting(parentTag, childTag));
+  };
+
+  document.getElementById("form")?.addEventListener("submit", handleFormSubmit);
+</script>
