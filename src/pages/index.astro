@@ -2,7 +2,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>HTML nesting validator</title>
+    <title>Online HTML nesting validator</title>
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <meta name="description" content="Validate your HTML tag nesting here" />
@@ -66,6 +66,7 @@
   const parentTagInput = document.getElementById("parent-input")! as HTMLInputElement;
   const childTagInput = document.getElementById("child-input")! as HTMLInputElement;
   const inputs = [parentTagInput, childTagInput];
+  const form = document.getElementById("form")!;
 
   const reset = () => {
     clearTimeout(resetTimer);
@@ -84,7 +85,7 @@
       reset();
     }, 3000);
 
-    document.querySelectorAll("input").forEach((input) => input.addEventListener("input", reset, { once: true }));
+    form.addEventListener("input", reset, { once: true });
   };
 
   const handleFormSubmit = (e: Event) => {
@@ -96,5 +97,5 @@
     applyStyles(isValidHTMLNesting(parentTag, childTag));
   };
 
-  document.getElementById("form")?.addEventListener("submit", handleFormSubmit);
+  form.addEventListener("submit", handleFormSubmit);
 </script>
